@@ -1028,6 +1028,9 @@ JOIN departments d ON te.department = d.dept_name;"></textarea>
             
             const studentName = prompt("Enter your name for the certificate:") || "SQL Champion";
             
+            // Set document title for print filename
+            document.title = `SQL Beginners Certificate - ${studentName}`;
+            
             document.body.innerHTML = `
                 <style>
                     @media print {
