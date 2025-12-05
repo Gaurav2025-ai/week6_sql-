@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Week 6: Intro to Advanced SQL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Amazon Ember', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f1419, #232f3e, #131a22);
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: none;
+            width: 100%;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .sidebar {
+            width: 250px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #232f3e 0%, #131a22 100%);
+            border-radius: 8px;
+            border: 1px solid #3a4553;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .org-title {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #ff9900;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        .course-title {
+            font-size: 1.8em;
+            margin: 8px 0;
+            color: #ffffff;
+            font-weight: 400;
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            margin-top: 10px;
+            color: #cccccc;
+            font-weight: 300;
+        }
+
+        .creator-info {
+            background: #232f3e;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #3a4553;
+        }
+
+        .creator-item {
+            background: #131a22;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #3a4553;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .name {
+            font-size: 1em;
+            font-weight: 600;
+            color: #ff9900;
+            margin: 5px 0;
+        }
+
+        .handle {
+            color: #cccccc;
+            font-size: 0.9em;
+        }
+
+        .learning-path {
+            background: #ff9900;
+            color: #131a22;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .section {
+            background: #232f3e;
+            margin: 8px 0;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #3a4553;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .section h2 {
+            color: #ff9900;
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .concept-card {
+            background: #131a22;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ff9900;
+            margin: 8px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .data-tables {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 8px 0;
+        }
+
+        .table-container {
+            background: #131a22;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #3a4553;
+        }
+
+        .table-title {
+            color: #ff9900;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+
+        th, td {
+            padding: 6px;
+            text-align: left;
+            border: 1px solid #3a4553;
+        }
+
+        th {
+            background: #232f3e;
+            color: #ff9900;
+            font-weight: bold;
+        }
+
+        td {
+            background: #0f1419;
+        }
+
+        .interactive-demo {
+            background: #131a22;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #ff9900;
+            margin: 8px 0;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 8px 0;
+            flex-wrap: wrap;
+        }
+
+        .demo-btn {
+            background: linear-gradient(135deg, #ff9900, #e68900);
+            color: #131a22;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            min-width: 140px;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3);
+        }
+
+        .demo-btn.active {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .sql-query {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 8px 0;
+            border-left: 4px solid #ff9900;
+            overflow-x: auto;
+        }
+
+        .keyword {
+            color: #66d9ef;
+            font-weight: bold;
+        }
+
+        .string {
+            color: #a6e22e;
+        }
+
+        .comment {
+            color: #75715e;
+            font-style: italic;
+        }
+
+        .number {
+            color: #ae81ff;
+        }
+
+        .progress-bar {
+            background: #131a22;
+            height: 8px;
+            border-radius: 4px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff9900, #e68900);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .practice-challenge {
+            background: #131a22;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            margin: 8px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .challenge-input {
+            width: 100%;
+            height: 120px;
+            background: #1e1e1e;
+            color: #f8f8f2;
+            border: 1px solid #3a4553;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            margin: 8px 0;
+        }
+
+        .challenge-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .solution-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .result-display {
+            background: #0f1419;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #27ae60;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .completion-section {
+            text-align: center;
+            background: linear-gradient(135deg, #232f3e, #131a22);
+            padding: 40px;
+            border-radius: 8px;
+            border: 2px solid #ff9900;
+            margin: 8px 0;
+        }
+
+        .finish-btn {
+            background: linear-gradient(135deg, #ff9900, #e68900);
+            color: #131a22;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .finish-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 153, 0, 0.4);
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 5px #ff9900, 0 0 10px #ff9900, 0 0 15px #ff9900; }
+            50% { text-shadow: 0 0 10px #ff9900, 0 0 20px #ff9900, 0 0 30px #ff9900; }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 10px;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+            
+            .data-tables {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div class="welcome-overlay" id="welcomeScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 20, 25, 0.95); z-index: 1000; display: flex; justify-content: center; align-items: center;">
+        <div class="welcome-card" style="background: linear-gradient(135deg, #232f3e, #131a22); padding: 40px; border-radius: 12px; border: 2px solid #ff9900; text-align: center; max-width: 600px; margin: 20px;">
+            <div style="font-size: 3em; margin-bottom: 8px;">🚀 Welcome to SQL Week 6! 🎯</div>
+            
+            <div style="font-size: 1.1em; margin: 8px 0; line-height: 1.6; color: #cccccc;">
+                "You've mastered the fundamentals! 🎉<br>
+                Now it's time to unlock advanced SQL superpowers! ⚡<br>
+                Subqueries, window functions, and database wizardry await! 🧙‍♂️"
+            </div>
+            
+            <div style="font-size: 1.1em; margin: 8px 0; font-weight: 600;">
+                This advanced week covers:<br>
+                🎯 Subqueries - Queries within queries<br>
+                🎯 Window Functions - Advanced analytics<br>
+                🎯 Common Table Expressions (CTEs)<br>
+                🎯 Advanced JOINs and performance<br>
+                🎯 Real-world database optimization
+            </div>
+            
+            <button onclick="startLearning()" style="background: linear-gradient(135deg, #ff9900, #e68900); color: #131a22; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1em; margin-top: 20px; transition: all 0.3s ease;">
+                🚀 Begin Advanced SQL Journey! 🚀
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="creator-info">
+                <div class="creator-item">
+                    <strong>🎯 Pillar Head</strong>
+                    <div class="name">Ambika</div>
+                    <div class="handle">(@ligerka)</div>
+                </div>
+                <div class="creator-item">
+                    <strong>👨‍💻 Created by</strong>
+                    <div class="name">Rathiga</div>
+                    <div class="handle">(@rathiga)</div>
+                </div>
+                <div class="learning-path">
+                    🚀 SQL Fundamentals - Week 6
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <div class="org-title">🏢 HYD SUPPORT OPS</div>
+                <div class="course-title">🚀 SQL Week 6: Intro to Advanced SQL</div>
+                <div class="tagline">Master advanced database operations and unlock SQL superpowers!</div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <!-- Recap Section -->
+            <div class="section">
+                <h2>📚 Your Amazing SQL Journey So Far</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin: 8px 0;">
+                    <div style="background: #131a22; padding: 15px; border-radius: 8px; border-left: 4px solid #3498db;">
+                        <strong>Week 1:</strong> SELECT & basics ✅
+                    </div>
+                    <div style="background: #131a22; padding: 15px; border-radius: 8px; border-left: 4px solid #e74c3c;">
+                        <strong>Week 2:</strong> WHERE & operators ✅
+                    </div>
+                    <div style="background: #131a22; padding: 15px; border-radius: 8px; border-left: 4px solid #f39c12;">
+                        <strong>Week 3:</strong> AND/OR & sorting ✅
+                    </div>
+                    <div style="background: #131a22; padding: 15px; border-radius: 8px; border-left: 4px solid #27ae60;">
+                        <strong>Week 4:</strong> GROUP BY & aggregation ✅
+                    </div>
+                    <div style="background: #131a22; padding: 15px; border-radius: 8px; border-left: 4px solid #9b59b6;">
+                        <strong>Week 5:</strong> JOINs & relationships ✅
+                    </div>
+                </div>
+                <p style="font-size: 1.1em; color: #cccccc; text-align: center; margin-top: 20px;">
+                    🎉 You're now ready for advanced SQL techniques that will make you a database wizard!
+                </p>
+            </div>
+            <!-- Sample Data for Advanced Examples -->
+            <div class="section">
+                <h2>📊 Our Advanced Sample Data</h2>
+                <div class="data-tables">
+                    <div class="table-container">
+                        <div class="table-title">👥 Employees Table</div>
+                        <table id="employeesTable">
+                            <thead>
+                                <tr>
+                                    <th>emp_id</th>
+                                    <th>name</th>
+                                    <th>department</th>
+                                    <th>salary</th>
+                                    <th>hire_date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1</td><td>Alice</td><td>Engineering</td><td>75000</td><td>2022-01-15</td></tr>
+                                <tr><td>2</td><td>Bob</td><td>Engineering</td><td>80000</td><td>2021-03-10</td></tr>
+                                <tr><td>3</td><td>Charlie</td><td>Sales</td><td>60000</td><td>2022-06-20</td></tr>
+                                <tr><td>4</td><td>Diana</td><td>Sales</td><td>65000</td><td>2021-11-05</td></tr>
+                                <tr><td>5</td><td>Eve</td><td>Marketing</td><td>55000</td><td>2023-02-12</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-container">
+                        <div class="table-title">🏢 Departments Table</div>
+                        <table id="departmentsTable">
+                            <thead>
+                                <tr>
+                                    <th>dept_name</th>
+                                    <th>budget</th>
+                                    <th>manager_id</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Engineering</td><td>500000</td><td>2</td></tr>
+                                <tr><td>Sales</td><td>300000</td><td>4</td></tr>
+                                <tr><td>Marketing</td><td>200000</td><td>5</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subqueries Section -->
+            <div class="section">
+                <h2>🎯 Subqueries: Queries Within Queries</h2>
+                
+                <div class="concept-card">
+                    <h3 style="color: #ff9900; margin-bottom: 10px;">What are Subqueries?</h3>
+                    <p style="margin-bottom: 10px;">
+                        A subquery is a query nested inside another query. Think of it as asking a question within a question!
+                    </p>
+                    <p style="color: #cccccc;">
+                        <strong>Example:</strong> "Show me employees who earn more than the average salary"
+                    </p>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3 style="color: #ff9900; margin-bottom: 10px;">Interactive Subquery Demo</h3>
+                    
+                    <div class="demo-buttons">
+                        <button class="demo-btn active" onclick="showSubquery('basic')" id="basicBtn">Basic Subquery</button>
+                        <button class="demo-btn" onclick="showSubquery('correlated')" id="correlatedBtn">Correlated Subquery</button>
+                        <button class="demo-btn" onclick="showSubquery('exists')" id="existsBtn">EXISTS Subquery</button>
+                    </div>
+
+                    <div class="sql-query" id="subqueryExample">
+                        <span class="comment">-- Find employees earning more than average salary</span><br>
+                        <span class="keyword">SELECT</span> name, salary<br>
+                        <span class="keyword">FROM</span> employees<br>
+                        <span class="keyword">WHERE</span> salary > (<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">SELECT</span> <span class="keyword">AVG</span>(salary)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">FROM</span> employees<br>
+                        );
+                    </div>
+
+                    <div style="background: #0f1419; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                        <div style="color: #ff9900; font-weight: bold; margin-bottom: 10px;">📋 Result:</div>
+                        <table id="subqueryResult" style="width: 100%;">
+                            <thead>
+                                <tr><th>name</th><th>salary</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Alice</td><td>75000</td></tr>
+                                <tr><td>Bob</td><td>80000</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="background: #131a22; padding: 15px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #3498db;">
+                        <div id="subqueryExplanation">
+                            <p><strong>How it works:</strong></p>
+                            <p style="color: #cccccc; margin-top: 5px;">
+                                1. Inner query calculates average salary (67,000)<br>
+                                2. Outer query finds employees with salary > 67,000<br>
+                                3. Result: Alice and Bob earn above average
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Window Functions Section -->
+            <div class="section">
+                <h2>📊 Window Functions: Advanced Analytics</h2>
+                
+                <div class="concept-card">
+                    <h3 style="color: #ff9900; margin-bottom: 10px;">What are Window Functions?</h3>
+                    <p style="margin-bottom: 10px;">
+                        Window functions perform calculations across a set of rows related to the current row, without grouping them into a single result.
+                    </p>
+                    <p style="color: #cccccc;">
+                        <strong>Common functions:</strong> ROW_NUMBER(), RANK(), DENSE_RANK(), LAG(), LEAD()
+                    </p>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3 style="color: #ff9900; margin-bottom: 10px;">Interactive Window Functions Demo</h3>
+                    
+                    <div class="demo-buttons">
+                        <button class="demo-btn active" onclick="showWindow('rank')" id="rankBtn">RANK Function</button>
+                        <button class="demo-btn" onclick="showWindow('row_number')" id="rowNumberBtn">ROW_NUMBER</button>
+                        <button class="demo-btn" onclick="showWindow('lag_lead')" id="lagLeadBtn">LAG/LEAD</button>
+                    </div>
+
+                    <div class="sql-query" id="windowExample">
+                        <span class="comment">-- Rank employees by salary within each department</span><br>
+                        <span class="keyword">SELECT</span> name, department, salary,<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">RANK</span>() <span class="keyword">OVER</span> (<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">PARTITION BY</span> department<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ORDER BY</span> salary <span class="keyword">DESC</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;) <span class="keyword">AS</span> salary_rank<br>
+                        <span class="keyword">FROM</span> employees;
+                    </div>
+
+                    <div style="background: #0f1419; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                        <div style="color: #ff9900; font-weight: bold; margin-bottom: 10px;">📋 Result:</div>
+                        <table id="windowResult" style="width: 100%;">
+                            <thead>
+                                <tr><th>name</th><th>department</th><th>salary</th><th>salary_rank</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Bob</td><td>Engineering</td><td>80000</td><td>1</td></tr>
+                                <tr><td>Alice</td><td>Engineering</td><td>75000</td><td>2</td></tr>
+                                <tr><td>Diana</td><td>Sales</td><td>65000</td><td>1</td></tr>
+                                <tr><td>Charlie</td><td>Sales</td><td>60000</td><td>2</td></tr>
+                                <tr><td>Eve</td><td>Marketing</td><td>55000</td><td>1</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="background: #131a22; padding: 15px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #9b59b6;">
+                        <div id="windowExplanation">
+                            <p><strong>How it works:</strong></p>
+                            <p style="color: #cccccc; margin-top: 5px;">
+                                1. PARTITION BY groups rows by department<br>
+                                2. ORDER BY sorts by salary within each group<br>
+                                3. RANK() assigns ranking numbers<br>
+                                4. Each row keeps its individual data
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Common Table Expressions (CTEs) -->
+            <div class="section">
+                <h2>🔗 Common Table Expressions (CTEs)</h2>
+                
+                <div class="concept-card">
+                    <h3 style="color: #ff9900; margin-bottom: 10px;">What are CTEs?</h3>
+                    <p style="margin-bottom: 10px;">
+                        CTEs are temporary named result sets that exist only during the execution of a single query. They make complex queries more readable!
+                    </p>
+                    <p style="color: #cccccc;">
+                        <strong>Syntax:</strong> WITH cte_name AS (query) SELECT * FROM cte_name
+                    </p>
+                </div>
+
+                <div class="sql-query">
+                    <span class="comment">-- Find departments with above-average total salary</span><br>
+                    <span class="keyword">WITH</span> dept_totals <span class="keyword">AS</span> (<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">SELECT</span> department, <span class="keyword">SUM</span>(salary) <span class="keyword">AS</span> total_salary<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">FROM</span> employees<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">GROUP BY</span> department<br>
+                    ),<br>
+                    avg_total <span class="keyword">AS</span> (<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">SELECT</span> <span class="keyword">AVG</span>(total_salary) <span class="keyword">AS</span> avg_dept_total<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">FROM</span> dept_totals<br>
+                    )<br>
+                    <span class="keyword">SELECT</span> dt.department, dt.total_salary<br>
+                    <span class="keyword">FROM</span> dept_totals dt, avg_total at<br>
+                    <span class="keyword">WHERE</span> dt.total_salary > at.avg_dept_total;
+                </div>
+            </div>
+
+            <!-- Practice Challenges -->
+            <div class="section">
+                <h2>💪 Advanced Practice Challenges</h2>
+                
+                <div class="practice-challenge">
+                    <h3 style="color: #3498db; margin-bottom: 10px;">Challenge 1: Subquery Master</h3>
+                    <p><strong>Task:</strong> Find employees who earn more than their department's average salary.</p>
+                    <p><strong>Hint:</strong> Use a correlated subquery that references the outer query's department.</p>
+                    
+                    <textarea id="challenge1Code" class="challenge-input" placeholder="-- Write your subquery here
+SELECT name, department, salary
+FROM employees e1
+WHERE salary > (
+    -- Your subquery here
+);"></textarea>
+                    
+                    <button class="challenge-btn" onclick="runChallenge(1)">▶️ Run Query</button>
+                    <button class="solution-btn" onclick="showSolution(1)">💡 Show Solution</button>
+                    
+                    <div id="challenge1Result" class="result-display">
+                        <div style="color: #27ae60; font-weight: bold; margin-bottom: 10px;">✅ Query Result:</div>
+                        <div id="challenge1Output"></div>
+                    </div>
+                    
+                    <div id="solution1" style="display: none; margin-top: 10px;">
+                        <div style="color: #ff9900; font-weight: bold; margin-bottom: 10px;">💡 Solution:</div>
+                        <div class="sql-query">
+                            <span class="keyword">SELECT</span> name, department, salary<br>
+                            <span class="keyword">FROM</span> employees e1<br>
+                            <span class="keyword">WHERE</span> salary > (<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">SELECT</span> <span class="keyword">AVG</span>(salary)<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">FROM</span> employees e2<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHERE</span> e2.department = e1.department<br>
+                            );
+                        </div>
+                    </div>
+                </div>
+
+                <div class="practice-challenge">
+                    <h3 style="color: #3498db; margin-bottom: 10px;">Challenge 2: Window Function Wizard</h3>
+                    <p><strong>Task:</strong> Show each employee's salary and the difference from the previous employee's salary in the same department (ordered by hire_date).</p>
+                    <p><strong>Hint:</strong> Use LAG() window function with PARTITION BY department.</p>
+                    
+                    <textarea id="challenge2Code" class="challenge-input" placeholder="-- Write your window function query here
+SELECT name, department, salary, hire_date,
+    -- Your window function here
+FROM employees
+ORDER BY department, hire_date;"></textarea>
+                    
+                    <button class="challenge-btn" onclick="runChallenge(2)">▶️ Run Query</button>
+                    <button class="solution-btn" onclick="showSolution(2)">💡 Show Solution</button>
+                    
+                    <div id="challenge2Result" class="result-display">
+                        <div style="color: #27ae60; font-weight: bold; margin-bottom: 10px;">✅ Query Result:</div>
+                        <div id="challenge2Output"></div>
+                    </div>
+                    
+                    <div id="solution2" style="display: none; margin-top: 10px;">
+                        <div style="color: #ff9900; font-weight: bold; margin-bottom: 10px;">💡 Solution:</div>
+                        <div class="sql-query">
+                            <span class="keyword">SELECT</span> name, department, salary, hire_date,<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;salary - <span class="keyword">LAG</span>(salary) <span class="keyword">OVER</span> (<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">PARTITION BY</span> department<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ORDER BY</span> hire_date<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;) <span class="keyword">AS</span> salary_diff<br>
+                            <span class="keyword">FROM</span> employees<br>
+                            <span class="keyword">ORDER BY</span> department, hire_date;
+                        </div>
+                    </div>
+                </div>
+
+                <div class="practice-challenge">
+                    <h3 style="color: #3498db; margin-bottom: 10px;">Challenge 3: CTE Champion</h3>
+                    <p><strong>Task:</strong> Use a CTE to find the top-paid employee in each department and their salary percentage of the department budget.</p>
+                    <p><strong>Hint:</strong> Create a CTE with ROW_NUMBER() to find top employees, then JOIN with departments.</p>
+                    
+                    <textarea id="challenge3Code" class="challenge-input" placeholder="-- Write your CTE query here
+WITH top_employees AS (
+    -- Your CTE logic here
+)
+SELECT -- Your final SELECT here
+FROM top_employees te
+JOIN departments d ON te.department = d.dept_name;"></textarea>
+                    
+                    <button class="challenge-btn" onclick="runChallenge(3)">▶️ Run Query</button>
+                    <button class="solution-btn" onclick="showSolution(3)">💡 Show Solution</button>
+                    
+                    <div id="challenge3Result" class="result-display">
+                        <div style="color: #27ae60; font-weight: bold; margin-bottom: 10px;">✅ Query Result:</div>
+                        <div id="challenge3Output"></div>
+                    </div>
+                    
+                    <div id="solution3" style="display: none; margin-top: 10px;">
+                        <div style="color: #ff9900; font-weight: bold; margin-bottom: 10px;">💡 Solution:</div>
+                        <div class="sql-query">
+                            <span class="keyword">WITH</span> top_employees <span class="keyword">AS</span> (<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">SELECT</span> name, department, salary,<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ROW_NUMBER</span>() <span class="keyword">OVER</span> (<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">PARTITION BY</span> department<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ORDER BY</span> salary <span class="keyword">DESC</span><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;) <span class="keyword">AS</span> rn<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">FROM</span> employees<br>
+                            )<br>
+                            <span class="keyword">SELECT</span> te.name, te.department, te.salary,<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ROUND</span>((te.salary * <span class="number">100.0</span> / d.budget), <span class="number">2</span>) <span class="keyword">AS</span> budget_percentage<br>
+                            <span class="keyword">FROM</span> top_employees te<br>
+                            <span class="keyword">JOIN</span> departments d <span class="keyword">ON</span> te.department = d.dept_name<br>
+                            <span class="keyword">WHERE</span> te.rn = <span class="number">1</span>;
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-World Applications -->
+            <div class="section">
+                <h2>🌍 Real-World Advanced SQL Applications</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div class="concept-card">
+                        <h3 style="color: #27ae60;">📈 Business Analytics</h3>
+                        <p>Use window functions for running totals, moving averages, and ranking analysis in sales and financial reporting.</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3 style="color: #8e44ad;">🔍 Data Science</h3>
+                        <p>Subqueries and CTEs help in complex data transformations, feature engineering, and statistical analysis.</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3 style="color: #e67e22;">⚡ Performance Optimization</h3>
+                        <p>Advanced SQL techniques can replace multiple queries with single, efficient operations, improving database performance.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completion Section -->
+            <div class="completion-section">
+                <h2 style="font-size: 2em; margin-bottom: 10px;">🎯 Ready to Complete Your SQL Mastery?</h2>
+                <p style="font-size: 1.1em; margin-bottom: 8px;">
+                    You've conquered advanced SQL! Subqueries, window functions, and CTEs are now in your toolkit! 🧙‍♂️
+                </p>
+                <button class="finish-btn" onclick="celebrateCompletion()">
+                    🎉 Complete Week 6 & Become an SQL Master! 🎉
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let progress = 0;
+
+        function startLearning() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            updateProgress(20);
+        }
+
+        function updateProgress(value) {
+            progress = value;
+            document.getElementById('progressBar').style.width = value + '%';
+        }
+
+        function showWindow(type) {
+            // Update button states - fix the button ID references
+            document.querySelectorAll('#rankBtn, #rowNumberBtn, #lagLeadBtn').forEach(btn => btn.classList.remove('active'));
+            
+            let activeBtn;
+            switch(type) {
+                case 'rank':
+                    activeBtn = document.getElementById('rankBtn');
+                    break;
+                case 'row_number':
+                    activeBtn = document.getElementById('rowNumberBtn');
+                    break;
+                case 'lag_lead':
+                    activeBtn = document.getElementById('lagLeadBtn');
+                    break;
+            }
+            
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+            
+            const examples = {
+                rank: {
+                    query: `<span class="comment">-- Rank employees by salary within each department</span><br>
+                            <span class="keyword">SELECT</span> name, department, salary,<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">RANK</span>() <span class="keyword">OVER</span> (<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">PARTITION BY</span> department<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ORDER BY</span> salary <span class="keyword">DESC</span><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;) <span class="keyword">AS</span> salary_rank<br>
+                            <span class="keyword">FROM</span> employees;`,
+                    explanation: `<p><strong>How it works:</strong></p>
+                                <p style="color: #cccccc; margin-top: 5px;">
+                                    1. PARTITION BY groups rows by department<br>
+                                    2. ORDER BY sorts by salary within each group<br>
+                                    3. RANK() assigns ranking numbers<br>
+                                    4. Each row keeps its individual data
+                                </p>`
+                },
+                row_number: {
+                    query: `<span class="comment">-- Number employees by hire date within department</span><br>
+                            <span class="keyword">SELECT</span> name, department, hire_date,<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ROW_NUMBER</span>() <span class="keyword">OVER</span> (<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">PARTITION BY</span> department<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">ORDER BY</span> hire_date<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;) <span class="keyword">AS</span> hire_order<br>
+                            <span class="keyword">FROM</span> employees;`,
+                    explanation: `<p><strong>How it works:</strong></p>
+                                <p style="color: #cccccc; margin-top: 5px;">
+                                    1. ROW_NUMBER() assigns unique sequential numbers<br>
+                                    2. PARTITION BY resets numbering for each department<br>
+                                    3. ORDER BY determines the sequence<br>
+                                    4. Result: Hire order within each department
+                                </p>`
+                },
+                lag_lead: {
+                    query: `<span class="comment">-- Compare each employee's salary with previous/next</span><br>
+                            <span class="keyword">SELECT</span> name, salary,<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">LAG</span>(salary) <span class="keyword">OVER</span> (<span class="keyword">ORDER BY</span> salary) <span class="keyword">AS</span> prev_salary,<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">LEAD</span>(salary) <span class="keyword">OVER</span> (<span class="keyword">ORDER BY</span> salary) <span class="keyword">AS</span> next_salary<br>
+                            <span class="keyword">FROM</span> employees<br>
+                            <span class="keyword">ORDER BY</span> salary;`,
+                    explanation: `<p><strong>How it works:</strong></p>
+                                <p style="color: #cccccc; margin-top: 5px;">
+                                    1. LAG() gets the previous row's value<br>
+                                    2. LEAD() gets the next row's value<br>
+                                    3. ORDER BY determines row sequence<br>
+                                    4. Result: Compare with adjacent salaries
+                                </p>`
+                }
+            };
+            
+            document.getElementById('windowExample').innerHTML = examples[type].query;
+            document.getElementById('windowExplanation').innerHTML = examples[type].explanation;
+            updateProgress(Math.min(progress + 10, 80));
+        }
+
+        function showSubquery(type) {
+            // Update button states - fix the button ID references  
+            document.querySelectorAll('#basicBtn, #correlatedBtn, #existsBtn').forEach(btn => btn.classList.remove('active'));
+            
+            let activeBtn;
+            switch(type) {
+                case 'basic':
+                    activeBtn = document.getElementById('basicBtn');
+                    break;
+                case 'correlated':
+                    activeBtn = document.getElementById('correlatedBtn');
+                    break;
+                case 'exists':
+                    activeBtn = document.getElementById('existsBtn');
+                    break;
+            }
+            
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+            
+            const examples = {
+                basic: {
+                    query: `<span class="comment">-- Find employees earning more than average salary</span><br>
+                            <span class="keyword">SELECT</span> name, salary<br>
+                            <span class="keyword">FROM</span> employees<br>
+                            <span class="keyword">WHERE</span> salary > (<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">SELECT</span> <span class="keyword">AVG</span>(salary)<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">FROM</span> employees<br>
+                            );`,
+                    explanation: `<p><strong>How it works:</strong></p>
+                                <p style="color: #cccccc; margin-top: 5px;">
+                                    1. Inner query calculates average salary (67,000)<br>
+                                    2. Outer query finds employees with salary > 67,000<br>
+                                    3. Result: Alice and Bob earn above average
+                                </p>`
+                },
+                correlated: {
+                    query: `<span class="comment">-- Find employees earning more than their department average</span><br>
+                            <span class="keyword">SELECT</span> name, department, salary<br>
+                            <span class="keyword">FROM</span> employees e1<br>
+                            <span class="keyword">WHERE</span> salary > (<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">SELECT</span> <span class="keyword">AVG</span>(salary)<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">FROM</span> employees e2<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHERE</span> e2.department = e1.department<br>
+                            );`,
+                    explanation: `<p><strong>How it works:</strong></p>
+                                <p style="color: #cccccc; margin-top: 5px;">
+                                    1. For each employee, inner query calculates their department's average<br>
+                                    2. Outer query compares employee salary to department average<br>
+                                    3. Result: Employees above their department's average
+                                </p>`
+                },
+                exists: {
+                    query: `<span class="comment">-- Find departments that have employees</span><br>
+                            <span class="keyword">SELECT</span> dept_name, budget<br>
+                            <span class="keyword">FROM</span> departments d<br>
+                            <span class="keyword">WHERE</span> <span class="keyword">EXISTS</span> (<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">SELECT</span> <span class="number">1</span><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">FROM</span> employees e<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHERE</span> e.department = d.dept_name<br>
+                            );`,
+                    explanation: `<p><strong>How it works:</strong></p>
+                                <p style="color: #cccccc; margin-top: 5px;">
+                                    1. EXISTS checks if subquery returns any rows<br>
+                                    2. For each department, check if employees exist<br>
+                                    3. Result: Only departments with employees are returned
+                                </p>`
+                }
+            };
+            
+            document.getElementById('subqueryExample').innerHTML = examples[type].query;
+            document.getElementById('subqueryExplanation').innerHTML = examples[type].explanation;
+            updateProgress(Math.min(progress + 10, 80));
+        }
+
+        function runChallenge(challengeNumber) {
+            const codeElement = document.getElementById(`challenge${challengeNumber}Code`);
+            const resultElement = document.getElementById(`challenge${challengeNumber}Result`);
+            const outputElement = document.getElementById(`challenge${challengeNumber}Output`);
+            
+            const userQuery = codeElement.value.trim().toLowerCase();
+            
+            if (!userQuery) {
+                alert('Please write a SQL query first!');
+                return;
+            }
+            
+            // Simple validation and feedback
+            let isCorrect = false;
+            let feedback = '';
+            
+            switch(challengeNumber) {
+                case 1:
+                    if (userQuery.includes('avg(salary)') && userQuery.includes('e2.department = e1.department')) {
+                        isCorrect = true;
+                        feedback = '<p style="color: #27ae60;">✅ Excellent! Your correlated subquery correctly finds employees earning above their department average.</p>';
+                    } else {
+                        feedback = '<p style="color: #e74c3c;">❌ Hint: Use a correlated subquery with AVG(salary) and reference the outer query\'s department.</p>';
+                    }
+                    break;
+                case 2:
+                    if (userQuery.includes('lag(salary)') && userQuery.includes('partition by department')) {
+                        isCorrect = true;
+                        feedback = '<p style="color: #27ae60;">✅ Perfect! Your window function correctly calculates salary differences within departments.</p>';
+                    } else {
+                        feedback = '<p style="color: #e74c3c;">❌ Hint: Use LAG(salary) with PARTITION BY department and ORDER BY hire_date.</p>';
+                    }
+                    break;
+                case 3:
+                    if (userQuery.includes('row_number()') && userQuery.includes('with') && userQuery.includes('partition by')) {
+                        isCorrect = true;
+                        feedback = '<p style="color: #27ae60;">✅ Outstanding! Your CTE with window function finds top employees and calculates budget percentages.</p>';
+                    } else {
+                        feedback = '<p style="color: #e74c3c;">❌ Hint: Use CTE with ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC) and WHERE rn = 1.</p>';
+                    }
+                    break;
+            }
+            
+            outputElement.innerHTML = feedback;
+            resultElement.style.display = 'block';
+            
+            if (isCorrect) {
+                updateProgress(Math.min(progress + 15, 95));
+            }
+        }
+
+        function showSolution(challengeNumber) {
+            document.getElementById('solution' + challengeNumber).style.display = 'block';
+            updateProgress(Math.min(progress + 10, 90));
+        }
+
+        function celebrateCompletion() {
+            updateProgress(100);
+            
+            const studentName = prompt("Enter your name for the certificate:") || "SQL Champion";
+            
+            document.body.innerHTML = `
+                <style>
+                    @media print {
+                        @page { margin: 0.5in; size: letter; }
+                        body { margin: 0; padding: 0; }
+                        .firework, .confetti { display: none; }
+                        button { display: none !important; }
+                        div[style*="min-height: 100vh"] { 
+                            min-height: auto !important; 
+                            padding: 10px !important; 
+                            display: block !important;
+                        }
+                        div[style*="max-width: 850px"] {
+                            max-width: 100% !important;
+                            padding: 15px !important;
+                            box-sizing: border-box !important;
+                        }
+                    }
+                    @keyframes firework {
+                        0% { transform: translate(0, 0); opacity: 1; }
+                        100% { transform: translate(var(--x), var(--y)); opacity: 0; }
+                    }
+                    @keyframes float {
+                        0%, 100% { transform: translateY(0px); }
+                        50% { transform: translateY(-20px); }
+                    }
+                    @keyframes shine {
+                        0%, 100% { opacity: 0.5; }
+                        50% { opacity: 1; }
+                    }
+                    @keyframes confetti {
+                        0% { transform: translateY(-100vh) rotate(0deg); }
+                        100% { transform: translateY(100vh) rotate(720deg); }
+                    }
+                    .firework {
+                        position: fixed;
+                        width: 5px;
+                        height: 5px;
+                        border-radius: 50%;
+                        animation: firework 1s ease-out infinite;
+                    }
+                    .confetti {
+                        position: fixed;
+                        width: 10px;
+                        height: 10px;
+                        top: -10px;
+                        animation: confetti 3s linear infinite;
+                    }
+                </style>
+                
+                <!-- Fireworks -->
+                ${Array(20).fill(0).map((_, i) => `
+                    <div class="firework" style="
+                        left: ${Math.random() * 100}%;
+                        top: ${Math.random() * 100}%;
+                        background: ${['#ff9900', '#ff6b6b', '#4ecdc4', '#45b7d1', '#f7dc6f'][i % 5]};
+                        --x: ${(Math.random() - 0.5) * 200}px;
+                        --y: ${(Math.random() - 0.5) * 200}px;
+                        animation-delay: ${Math.random() * 2}s;
+                    "></div>
+                `).join('')}
+                
+                <!-- Confetti -->
+                ${Array(30).fill(0).map((_, i) => `
+                    <div class="confetti" style="
+                        left: ${Math.random() * 100}%;
+                        background: ${['#ff9900', '#ff6b6b', '#4ecdc4', '#45b7d1', '#f7dc6f', '#e74c3c'][i % 6]};
+                        animation-delay: ${Math.random() * 3}s;
+                        animation-duration: ${3 + Math.random() * 2}s;
+                    "></div>
+                `).join('')}
+                
+                <div style="background: linear-gradient(135deg, #0f1419, #232f3e); min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Times New Roman', serif; padding: 20px; overflow: hidden;">
+                    <div style="background: linear-gradient(135deg, #232f3e, #131a22); border: 6px double #ff9900; border-radius: 15px; padding: 20px; width: 100%; max-width: 850px; box-shadow: 0 20px 60px rgba(255, 153, 0, 0.4); position: relative; color: #ffffff;">
+                        
+                        <!-- Decorative Ribbons -->
+                        <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #ff9900; padding: 10px 40px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-weight: bold; font-size: 0.9em;">
+                            ⭐ BEGINNER LEVEL MASTERY ⭐
+                        </div>
+                        
+                        <!-- Corner Decorations -->
+                        <div style="position: absolute; top: 15px; left: 15px; font-size: 2em; animation: float 3s ease-in-out infinite;">🎊</div>
+                        <div style="position: absolute; top: 15px; right: 15px; font-size: 2em; animation: float 3s ease-in-out infinite; animation-delay: 0.5s;">🎉</div>
+                        <div style="position: absolute; bottom: 15px; left: 15px; font-size: 2em; animation: float 3s ease-in-out infinite; animation-delay: 1s;">🏆</div>
+                        <div style="position: absolute; bottom: 15px; right: 15px; font-size: 2em; animation: float 3s ease-in-out infinite; animation-delay: 1.5s;">⭐</div>
+                        
+                        <!-- Certificate Header -->
+                        <div style="text-align: center; margin: 10px 0 5px 0;">
+                            <div style="font-size: 2em; font-weight: bold; color: #ff9900; margin-bottom: 10px; letter-spacing: 2px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); animation: shine 2s ease-in-out infinite;">
+                                🎓 CERTIFICATE OF COMPLETION 🎓
+                            </div>
+                            <div style="font-size: 1em; color: #ffffff; font-weight: bold; margin-top: 10px;">
+                                SQL Beginner Mastery Program
+                            </div>
+                            <div style="font-size: 0.9em; color: #cccccc; margin-top: 5px;">
+                                6-Week Comprehensive Learning Journey
+                            </div>
+                        </div>
+
+                        <!-- Certificate Body -->
+                        <div style="text-align: center; margin: 8px 0;">
+                            <div style="font-size: 1.1em; color: #cccccc; margin-bottom: 10px;">
+                                This is to certify that
+                            </div>
+                            
+                            <div style="font-size: 2.2em; font-weight: bold; color: #ff9900; margin: 8px 0; text-decoration: underline; text-decoration-color: #ff9900; font-family: 'Brush Script MT', cursive; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                                ${studentName}
+                            </div>
+                            
+                            <div style="font-size: 1.1em; color: #ffffff; margin: 8px 0; line-height: 1.5;">
+                                has successfully completed the <strong style="color: #ff9900;">6-Week SQL Beginner Program</strong><br/>
+                                demonstrating exceptional dedication and mastery of fundamental SQL concepts
+                            </div>
+                        </div>
+                        
+                        <!-- Learning Journey Recap -->
+                        <div style="background: rgba(255, 153, 0, 0.05); border: 2px solid #ff9900; border-radius: 10px; padding: 15px; margin: 8px 0;">
+                            <div style="font-size: 1.1em; font-weight: bold; color: #ff9900; text-align: center; margin-bottom: 8px;">
+                                📚 Your Learning Journey 📚
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.75em; color: #ffffff;">
+                                <div style="background: rgba(255, 153, 0, 0.1); padding: 6px; border-radius: 8px; border-left: 4px solid #ff9900;">
+                                    <strong style="color: #ff9900;">Week 1:</strong> SELECT Basics<br/>
+                                    <span style="color: #cccccc; font-size: 0.75em;">Retrieving data from tables</span>
+                                </div>
+                                <div style="background: rgba(255, 153, 0, 0.1); padding: 6px; border-radius: 8px; border-left: 4px solid #ff9900;">
+                                    <strong style="color: #ff9900;">Week 2:</strong> WHERE Clause<br/>
+                                    <span style="color: #cccccc; font-size: 0.75em;">Filtering data with conditions</span>
+                                </div>
+                                <div style="background: rgba(255, 153, 0, 0.1); padding: 6px; border-radius: 8px; border-left: 4px solid #ff9900;">
+                                    <strong style="color: #ff9900;">Week 3:</strong> ORDER BY & Sorting<br/>
+                                    <span style="color: #cccccc; font-size: 0.75em;">Organizing query results</span>
+                                </div>
+                                <div style="background: rgba(255, 153, 0, 0.1); padding: 6px; border-radius: 8px; border-left: 4px solid #ff9900;">
+                                    <strong style="color: #ff9900;">Week 4:</strong> Aggregate Functions<br/>
+                                    <span style="color: #cccccc; font-size: 0.75em;">COUNT, SUM, AVG, MIN, MAX</span>
+                                </div>
+                                <div style="background: rgba(255, 153, 0, 0.1); padding: 6px; border-radius: 8px; border-left: 4px solid #ff9900;">
+                                    <strong style="color: #ff9900;">Week 5:</strong> JOINs<br/>
+                                    <span style="color: #cccccc; font-size: 0.75em;">Combining data from multiple tables</span>
+                                </div>
+                                <div style="background: rgba(255, 153, 0, 0.1); padding: 6px; border-radius: 8px; border-left: 4px solid #ff9900;">
+                                    <strong style="color: #ff9900;">Week 6:</strong> Advanced SQL<br/>
+                                    <span style="color: #cccccc; font-size: 0.75em;">Subqueries, CTEs & Window Functions</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Skills Achieved -->
+                        <div style="text-align: center; margin: 8px 0;">
+                            <div style="font-size: 1em; font-weight: bold; color: #ff9900; margin-bottom: 10px;">
+                                🌟 Skills Mastered 🌟
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; font-size: 0.75em;">
+                                <span style="background: #ff9900; color: #131a22; padding: 5px 10px; border-radius: 20px; font-weight: bold;">Data Retrieval</span>
+                                <span style="background: #ff9900; color: #131a22; padding: 5px 10px; border-radius: 20px; font-weight: bold;">Data Filtering</span>
+                                <span style="background: #ff9900; color: #131a22; padding: 5px 10px; border-radius: 20px; font-weight: bold;">Data Aggregation</span>
+                                <span style="background: #ff9900; color: #131a22; padding: 5px 10px; border-radius: 20px; font-weight: bold;">Table Joins</span>
+                                <span style="background: #ff9900; color: #131a22; padding: 5px 10px; border-radius: 20px; font-weight: bold;">Subqueries</span>
+                                <span style="background: #ff9900; color: #131a22; padding: 5px 10px; border-radius: 20px; font-weight: bold;">Window Functions</span>
+                            </div>
+                        </div>
+
+                        <!-- Certificate Footer -->
+                        <div style="display: flex; justify-content: space-around; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 2px solid #ff9900;">
+                            <div style="text-align: center;">
+                                <div style="width: 50px; height: 50px; border: 3px solid #ff9900; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #ff9900, #e68900); color: #131a22; font-weight: bold; font-size: 1.5em; margin: 0 auto 5px; box-shadow: 0 5px 15px rgba(255, 153, 0, 0.5);">
+                                    🎓
+                                </div>
+                                <div style="color: #ff9900; font-size: 0.75em; font-weight: bold;">SQL BEGINNER</div>
+                                <div style="color: #cccccc; font-size: 0.65em;">CERTIFIED</div>
+                            </div>
+                            
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.1em; color: #ffffff; font-weight: bold; margin-bottom: 5px;">
+                                    ${new Date().toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    })}
+                                </div>
+                                <div style="color: #cccccc; font-size: 0.75em;">Completion Date</div>
+                            </div>
+                            
+                            <div style="text-align: center;">
+                                <div style="font-size: 2em; color: #ff9900; margin-bottom: 5px;">⭐</div>
+                                <div style="color: #ff9900; font-size: 0.75em; font-weight: bold;">6 WEEKS</div>
+                                <div style="color: #cccccc; font-size: 0.65em;">COMPLETED</div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="window.print()" style="background: linear-gradient(135deg, #ff9900, #e68900); color: #131a22; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 0 8px; box-shadow: 0 5px 15px rgba(255, 153, 0, 0.4); font-size: 1em;">
+                            🖨️ Print Certificate
+                        </button>
+                        <button onclick="location.reload()" style="background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 0 8px; box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4); font-size: 1em;">
+                            🔄 Practice Again
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        // Initialize with basic subquery
+        window.onload = function() {
+            showSubquery('basic');
+        };
+    </script>
+
+    <!-- Feedback Section -->
+    <div style="background: linear-gradient(135deg, #232f3e, #131a22); border: 2px solid #ff9900; border-radius: 12px; padding: 30px; margin: 40px auto; max-width: 800px; text-align: center;">
+        <div style="font-size: 2em; font-weight: bold; color: #ff9900; margin-bottom: 8px;">
+            🎉 Congratulations on Completing the Beginners SQL Module! 🎉
+        </div>
+        <div style="font-size: 1em; color: #ffffff; margin-bottom: 10px;">
+            You're on top of it! Flaunt your skills and certificate!
+        </div>
+        <div style="background: rgba(255, 153, 0, 0.1); border: 2px solid #ff9900; border-radius: 8px; padding: 20px; margin: 8px 0; font-size: 1em; color: #ffffff; line-height: 1.6;">
+            <div style="font-weight: bold; color: #ff9900; margin-bottom: 10px; font-size: 1.1em;">📋 Your Feedback Matters!</div>
+            <div style="color: #cccccc;">
+                A survey will be rolled out soon. Please participate to share your feedback. 
+                We put tremendous effort into curating this learning plan, and your participation 
+                helps us do better and deliver the best learning experience!
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
